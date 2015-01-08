@@ -1,0 +1,15 @@
+{
+  "name": "taily",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "MIT",
+  "bin": {
+    "taily": "./bin/taily.sh"
+  },
+  "dependencies": {
+    "cli-color": "^0.3.2",
+    "tail": "^0.4.0"
+  }
+}
