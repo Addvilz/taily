@@ -107,7 +107,7 @@ var taily = {
     run: function () {
 
         commander
-            .version('1.0.3')
+            .version('1.0.4')
             .option('-g, --grep [regex]', 'Grep the results of the output. Accepts multiple arguments sepparated by comma, for example, "foo|baz,bar" will match all lines containing (foo OR baz) AND bar.', taily.commanderFilters.list)
             .option('-b, --backlog', 'Output ALL lines, and continue with tailing. Useful with -g.')
             .option('--init', 'Create blank .taily.json.dist in $HOME')
