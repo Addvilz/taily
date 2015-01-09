@@ -2,7 +2,9 @@
  "files": {
 		"syslog" : {
             "file": "/var/log/syslog",
-            "color": "red"
+            "color": "red",
+            "filters": [""],
+            "lineSeparator: "\n"
         }
 	}
 }

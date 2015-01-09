@@ -1,11 +1,15 @@
 {
   "name": "taily",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Taily tails teh logz.",
   "main": "index.js",
   "author": {
     "name": "Matiss Treinis",
     "email": "matiss@marolind.com"
+  },
+  "repository" :
+  { "type" : "git"
+  , "url" : "https://github.com/Addvilz/taily.git"
   },
   "license": "MIT",
   "bin": {
@@ -13,28 +17,15 @@
   },
   "dependencies": {
     "cli-color": "^0.3.2",
+    "commander": "^2.6.0",
+    "glob": "^4.3.2",
+    "object-merge": "^2.5.1",
     "tail": "^0.4.0"
-  },
-  "gitHead": "1e16fbd8aba293c7eed010dff1e38be6f3b40f1f",
-  "_id": "taily@1.0.1",
-  "scripts": {},
-  "_shasum": "023de6d6a6f88abebe694130932619bfd5a8680a",
-  "_from": "taily@",
-  "_npmVersion": "1.4.28",
-  "_npmUser": {
-    "name": "addvilz",
-    "email": "matiss@marolind.com"
   },
   "maintainers": [
     {
       "name": "addvilz",
       "email": "matiss@marolind.com"
     }
-  ],
-  "dist": {
-    "shasum": "023de6d6a6f88abebe694130932619bfd5a8680a",
-    "tarball": "http://registry.npmjs.org/taily/-/taily-1.0.1.tgz"
-  },
-  "directories": {},
-  "_resolved": "https://registry.npmjs.org/taily/-/taily-1.0.1.tgz"
+  ]
 }
