@@ -39,7 +39,7 @@ In your home, create file called .taily.json. In that file put something like th
  	"files": {
 			"syslog" : {
         	    "file": "/var/log/syslog",
-            	"color": "red"
+            	"color": "red",
             	"filters": [],
             	"lineSeparator": "\n"
         	}
