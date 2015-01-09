@@ -1,4 +1,10 @@
 # taily
+
+[![version](https://img.shields.io/npm/v/taily.svg?style=flat-square)](https://www.npmjs.com/package/taily)
+[![dls](https://img.shields.io/npm/dm/taily.svg?style=flat-square)](https://www.npmjs.com/package/taily)
+![license](https://img.shields.io/npm/l/taily.svg?style=flat-square)
+![Is it ready?](https://img.shields.io/badge/Is%20it%20ready%20yet%3F-Yes-green.svg?style=flat-square)
+
 Taily tails teh logz. Now with colors!
 
 ![taily](http://cloud.louise.marolind.com/public.php?service=files&t=a098d70442a06c01ff83736c10afd242&download)
