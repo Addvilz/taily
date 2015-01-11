@@ -1,10 +1,15 @@
 {
     "files": {
-        "syslog" : {
+        "syslog": {
             "file": "/var/log/syslog",
-            "color": "red",
+            "color": "blue",
             "filters": [],
             "lineSeparator": "\n"
         }
+    },
+    "server": {
+        "host": "127.0.0.1",
+        "port": 9800,
+        "preserve": 100
     }
 }

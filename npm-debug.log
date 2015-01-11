@@ -1,0 +1,127 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'install', '-g', 'taily' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.35
+4 verbose node symlink /usr/bin/node
+5 verbose cache add [ 'taily', null ]
+6 verbose cache add name=undefined spec="taily" args=["taily",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: 'taily',
+7 verbose parsed url   path: 'taily',
+7 verbose parsed url   href: 'taily' }
+8 silly lockFile df8785ac-taily taily
+9 verbose lock taily /home/matiss/.npm/df8785ac-taily.lock
+10 silly lockFile df8785ac-taily taily
+11 silly lockFile df8785ac-taily taily
+12 verbose addNamed [ 'taily', '' ]
+13 verbose addNamed [ null, '*' ]
+14 silly lockFile 835bb1c3-taily taily@
+15 verbose lock taily@ /home/matiss/.npm/835bb1c3-taily.lock
+16 silly addNameRange { name: 'taily', range: '*', hasData: false }
+17 verbose request where is /taily
+18 verbose request registry https://registry.npmjs.org/
+19 verbose request id 2108a9723a3fcb06
+20 verbose url raw /taily
+21 verbose url resolving [ 'https://registry.npmjs.org/', './taily' ]
+22 verbose url resolved https://registry.npmjs.org/taily
+23 verbose request where is https://registry.npmjs.org/taily
+24 info trying registry request attempt 1 at 01:45:58
+25 http GET https://registry.npmjs.org/taily
+26 http 200 https://registry.npmjs.org/taily
+27 silly registry.get cb [ 200,
+27 silly registry.get   { date: 'Fri, 09 Jan 2015 00:46:04 GMT',
+27 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+27 silly registry.get     etag: '"7GGHKMINID893N8PF7B1P3YPT"',
+27 silly registry.get     'content-type': 'application/json',
+27 silly registry.get     'cache-control': 'max-age=60',
+27 silly registry.get     'content-length': '5939',
+27 silly registry.get     'accept-ranges': 'bytes',
+27 silly registry.get     via: '1.1 varnish',
+27 silly registry.get     age: '0',
+27 silly registry.get     'x-served-by': 'cache-lhr6321-LHR',
+27 silly registry.get     'x-cache': 'MISS',
+27 silly registry.get     'x-cache-hits': '0',
+27 silly registry.get     'x-timer': 'S1420764363.898660,VS0,VE157',
+27 silly registry.get     vary: 'Accept',
+27 silly registry.get     'keep-alive': 'timeout=10, max=50',
+27 silly registry.get     connection: 'Keep-Alive' } ]
+28 silly addNameRange number 2 { name: 'taily', range: '*', hasData: true }
+29 silly addNameRange versions [ 'taily', [ '1.0.0', '1.0.1', '1.0.2', '1.0.3' ] ]
+30 verbose addNamed [ 'taily', '1.0.3' ]
+31 verbose addNamed [ '1.0.3', '1.0.3' ]
+32 silly lockFile 35aa1c7f-taily-1-0-3 taily@1.0.3
+33 verbose lock taily@1.0.3 /home/matiss/.npm/35aa1c7f-taily-1-0-3.lock
+34 silly lockFile 35aa1c7f-taily-1-0-3 taily@1.0.3
+35 silly lockFile 35aa1c7f-taily-1-0-3 taily@1.0.3
+36 silly lockFile 835bb1c3-taily taily@
+37 silly lockFile 835bb1c3-taily taily@
+38 silly resolved [ { name: 'taily',
+38 silly resolved     version: '1.0.3',
+38 silly resolved     description: 'Taily tails teh logz.',
+38 silly resolved     main: 'index.js',
+38 silly resolved     author: { name: 'Matiss Treinis', email: 'matiss@marolind.com' },
+38 silly resolved     repository: { type: 'git', url: 'https://github.com/Addvilz/taily.git' },
+38 silly resolved     license: 'MIT',
+38 silly resolved     bin: { taily: './bin/taily.sh' },
+38 silly resolved     dependencies:
+38 silly resolved      { 'cli-color': '^0.3.2',
+38 silly resolved        commander: '^2.6.0',
+38 silly resolved        glob: '^4.3.2',
+38 silly resolved        'object-merge': '^2.5.1',
+38 silly resolved        tail: '^0.4.0' },
+38 silly resolved     maintainers: [ [Object] ],
+38 silly resolved     readme: '# taily\nTaily tails teh logz. Now with colors!\n\n#### What does it do?\n\nIt takes all files set in `~/.taily.json` and tails them. As soon as any file updates, it shows the output in terminal for you. In single terminal. Not 50.\n\n#### Installation\n\nLocally\n\n`npm install taily`\n\nor Globally\n\n`npm install taily -g`\n\n#### Usage\n\n\ttaily [options]\n\n\tOptions:\n\n    -h, --help          output usage information\n    -V, --version       output the version number\n    -g, --grep [regex]  Grep the results of the output. Accepts multiple arguments sepparated by comma, \n\t\t\t\t\t\tfor example, "foo|baz,bar" will match all lines containing (foo OR baz) AND bar.\n    -b, --backlog       Output ALL lines, and continue with tailing. Useful with -g.\n    --init              Create blank .taily.json.dist in $HOME\n    -e, --edit          Launch $EDITOR to edit .taily.json.dist\n\n\n#### Configuration \n\nIn your home, create file called .taily.json. In that file put something like this:\n\n\n\t{\n \t"files": {\n\t\t\t"syslog" : {\n        \t    "file": "/var/log/syslog",\n            \t"color": "red",\n            \t"filters": [],\n            \t"lineSeparator": "\\n"\n        \t}\n\t\t}\n\t}\n\n##### Allowed colors:\n\n`black, red, green, yellow, blue, magenta, cyan, white`\n\n##### Filters\n\nFilters are OR combined conditions to filter the output of a log. For example, you can set this to ["foo","bar"] to only see line containing foo OR bar. \n\n\n##### P.S.\n\n`filters` and `lineSeparator` is optional.',
+38 silly resolved     readmeFilename: 'README.md',
+38 silly resolved     gitHead: 'c7ce8e5d552c9679d8b781ddc2bedb0c19fbb4d7',
+38 silly resolved     bugs: { url: 'https://github.com/Addvilz/taily/issues' },
+38 silly resolved     homepage: 'https://github.com/Addvilz/taily',
+38 silly resolved     _id: 'taily@1.0.3',
+38 silly resolved     scripts: {},
+38 silly resolved     _shasum: 'c89f294a1d505537d14add79def7d2d12c36a96a',
+38 silly resolved     _from: 'taily@' } ]
+39 info install taily@1.0.3 into /usr/lib
+40 info installOne taily@1.0.3
+41 verbose lib/node_modules/taily unbuild
+42 verbose tar unpack /home/matiss/.npm/taily/1.0.3/package.tgz
+43 silly lockFile 450430c9-tar-usr-lib-node-modules-taily tar:///usr/lib/node_modules/taily
+44 verbose lock tar:///usr/lib/node_modules/taily /home/matiss/.npm/450430c9-tar-usr-lib-node-modules-taily.lock
+45 silly lockFile df0de544-tiss-npm-taily-1-0-3-package-tgz tar:///home/matiss/.npm/taily/1.0.3/package.tgz
+46 verbose lock tar:///home/matiss/.npm/taily/1.0.3/package.tgz /home/matiss/.npm/df0de544-tiss-npm-taily-1-0-3-package-tgz.lock
+47 silly gunzTarPerm modes [ '775', '664' ]
+48 error Error: EACCES, mkdir '/usr/lib/node_modules/taily'
+48 error  { [Error: EACCES, mkdir '/usr/lib/node_modules/taily']
+48 error   errno: 3,
+48 error   code: 'EACCES',
+48 error   path: '/usr/lib/node_modules/taily',
+48 error   fstream_type: 'Directory',
+48 error   fstream_path: '/usr/lib/node_modules/taily',
+48 error   fstream_class: 'DirWriter',
+48 error   fstream_stack:
+48 error    [ '/usr/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23',
+48 error      '/usr/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53',
+48 error      'Object.oncomplete (fs.js:108:15)' ] }
+49 error Please try running this command again as root/Administrator.
+50 error System Linux 3.13.0-43-generic
+51 error command "/usr/bin/node" "/usr/bin/npm" "install" "-g" "taily"
+52 error cwd /var/www/taily
+53 error node -v v0.10.35
+54 error npm -v 1.4.28
+55 error path /usr/lib/node_modules/taily
+56 error fstream_path /usr/lib/node_modules/taily
+57 error fstream_type Directory
+58 error fstream_class DirWriter
+59 error code EACCES
+60 error errno 3
+61 error stack Error: EACCES, mkdir '/usr/lib/node_modules/taily'
+62 error fstream_stack /usr/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23
+62 error fstream_stack /usr/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53
+62 error fstream_stack Object.oncomplete (fs.js:108:15)
+63 verbose exit [ 3, true ]

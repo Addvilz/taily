@@ -4,7 +4,11 @@ var fs = require('fs'),
     commander = require('commander'),
     glob = require('glob'),
     path = require('path'),
-    objectMerge = require('object-merge')
+    objectMerge = require('object-merge'),
+    events = require('events'),
+    http = require('http'),
+    socket = require('socket.io'),
+    url = require('url')
     ;
 
 var taily = {
@@ -21,9 +25,7 @@ var taily = {
     /**
      * Active config
      */
-    config: {
-        files: []
-    },
+    config: null,
 
     /**
      * Instances of tailed files
@@ -37,6 +39,9 @@ var taily = {
     commanderFilters: {
         list: function (val) {
             return val.split(',');
+        },
+        host: function (val) {
+            return val.split(':');
         }
     },
 
@@ -47,6 +52,10 @@ var taily = {
         withGrep: false,
         withFullReplay: false
     },
+
+    eventEmitter: null,
+
+    webPreserver: [],
 
     filterLine: function (line, config) {
         if (config.filters.length === 0) {
@@ -84,32 +93,48 @@ var taily = {
         return false;
     },
 
-    processLine: function (line, instance) {
+    getLineData: function (line, instance) {
         var fileConfig = instance.fileConfig;
         var appendToId = instance.appendToId === null ? '' : '>' + instance.appendToId;
 
 
         if (this.filterLine(line, fileConfig) === true) {
-            return;
+            return null;
         }
 
         var grepLine = false;
         if (this.runtimeOptions.withGrep.length > 0 && (grepLine = this.grepLine(line)) === false) {
-            return;
+            return null;
         } else if (grepLine !== false) {
             line = grepLine;
         }
 
-        var logLine = clc[fileConfig.color](instance.idOfTail + appendToId + ': ') + line;
+        return {
+            line: line,
+            color: fileConfig.color,
+            id: instance.idOfTail,
+            appendToId: appendToId
+        };
+    },
+
+    processLine: function (line, instance) {
+
+        var lineData = this.getLineData(line, instance);
+        if (lineData === null) {
+            return;
+        }
+
+        var logLine = clc[lineData.color](lineData.id + lineData.appendToId + ': ') + lineData.line;
         console.log(logLine);
     },
 
     run: function () {
 
         commander
-            .version('1.0.4')
+            .version('1.0.5')
             .option('-g, --grep [regex]', 'Grep the results of the output. Accepts multiple arguments sepparated by comma, for example, "foo|baz,bar" will match all lines containing (foo OR baz) AND bar.', taily.commanderFilters.list)
             .option('-b, --backlog', 'Output ALL lines, and continue with tailing. Useful with -g.')
+            .option('-s, --server [host:port]', 'Run pretty web ui', taily.commanderFilters.host)
             .option('--init', 'Create blank .taily.json.dist in $HOME')
             .option('-e, --edit', 'Launch $EDITOR to edit .taily.json.dist')
             .parse(process.argv);
@@ -123,6 +148,8 @@ var taily = {
             this.runConfigEditor();
             return;
         }
+
+        this.eventEmitter = new events.EventEmitter();
 
         this.loadConfig();
 
@@ -141,6 +168,18 @@ var taily = {
             console.log('Using full reply (--backlog option). This might take some time...');
         }
 
+        this.eventEmitter.on('line', function (line, tail) {
+            taily.processLine(line, tail);
+        });
+
+        if (commander.server) {
+            var hostPort = this.resolveServerPortAddress(commander.server);
+            console.log('Starting web UI on ' + hostPort.host + ':' + hostPort.port);
+            this.createServer(hostPort);
+        }
+
+        this.bindPreserver();
+
         this.createWatchers();
 
         if (this.tailsCount > 0) {
@@ -149,6 +188,81 @@ var taily = {
         } else {
             console.error('Nothing to tail...');
         }
+    },
+
+    bindPreserver: function () {
+        this.eventEmitter.on('line', function (line, instance) {
+            var lineData = taily.getLineData(line, instance);
+            if (lineData === null) {
+                return;
+            }
+            taily.webPreserver.push(lineData);
+            taily.webPreserver = taily.webPreserver.slice(-taily.config.server.preserve);
+        });
+    },
+
+    resolveServerPortAddress: function (arg) {
+        var addr = {
+            host: typeof taily.config.server !== 'undefined' && typeof taily.config.server.host !== 'undefined' ? taily.config.server.host : '127.0.0.1',
+            port: typeof taily.config.server !== 'undefined' && typeof taily.config.server.port !== 'undefined' ? taily.config.server.port : 9800
+        };
+        if (arg.length == 1) {
+            addr.port = arg[0];
+        }
+        if (arg.length == 2) {
+            addr.host = arg[0];
+            addr.port = arg[1];
+        }
+        return addr;
+    },
+
+    createServer: function (hostPort) {
+        server = http.createServer(function (request, response) {
+            var path = url.parse(request.url).pathname;
+            switch (path) {
+                case '/':
+                    fs.readFile(__dirname + '/web/web.html', {encoding: 'utf8'}, function (error, data) {
+                        response.writeHead(200, {'Content-Type': 'text/html'});
+                        response.end(data);
+                    });
+                    break;
+                case '/web/web.js':
+                    fs.readFile(__dirname + '/web/web.js', {encoding: 'utf8'}, function (error, data) {
+                        response.writeHead(200, {'Content-Type': 'application/javascript'});
+                        response.end(data);
+                    });
+                    break;
+                case '/web/preserved.js':
+                    response.writeHead(200, {'Content-Type': 'application/javascript'});
+                    response.end('var __preserved = ' + JSON.stringify(taily.webPreserver));
+                    break;
+                case '/web/web.css':
+                    fs.readFile(__dirname + '/web/web.css', {encoding: 'utf8'}, function (error, data) {
+                        response.writeHead(200, {'Content-Type': 'text/css'});
+                        response.end(data);
+                    });
+                    break;
+                default:
+                    response.writeHead(404);
+                    response.end('404d');
+                    break;
+            }
+        });
+        server.listen(hostPort.port, hostPort.host);
+        var socketServer = socket.listen(server);
+
+        this.eventEmitter.on('line', function (line, tail) {
+            taily.processSocketLine(socketServer, line, tail);
+        });
+    },
+
+    processSocketLine: function (socketServer, line, instance) {
+        var lineData = this.getLineData(line, instance);
+        if (lineData === null) {
+            return;
+        }
+
+        socketServer.emit('line', lineData);
     },
 
     makeRegex: function (regexString) {
@@ -195,7 +309,7 @@ var taily = {
         instanceOfTail.appendToId = isGlob ? path.basename(file) : null;
 
         instanceOfTail.on('line', function (line) {
-            taily.processLine(line, this);
+            taily.eventEmitter.emit('line', line, this);
         });
         instanceOfTail.on('error', function (error) {
             console.error('TAILY ERROR: ' + error);
@@ -265,7 +379,10 @@ var taily = {
             config.files[fileIndex] = fileEntry;
 
         }
-
+        if (typeof config.server == 'undefined') {
+            config.server = {};
+        }
+        config.server = objectMerge(this.getDefaultConfig().server, config.server);
         this.config = config;
     },
 
@@ -278,7 +395,11 @@ var taily = {
     },
 
     getConfigTemplate: function () {
-        return JSON.stringify({
+        return JSON.stringify(this.getDefaultConfig(), null, 4);
+    },
+
+    getDefaultConfig: function () {
+        return {
             files: {
                 syslog: {
                     file: '/var/log/syslog',
@@ -286,8 +407,13 @@ var taily = {
                     filters: [],
                     lineSeparator: '\n'
                 }
+            },
+            server: {
+                host: '127.0.0.1',
+                port: 9800,
+                preserve: 100
             }
-        }, null, 4);
+        };
     },
 
     getFileEntryDefaults: function () {

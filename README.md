@@ -29,13 +29,15 @@ or Globally
 
 	Options:
 
-    -h, --help          output usage information
-    -V, --version       output the version number
-    -g, --grep [regex]  Grep the results of the output. Accepts multiple arguments sepparated by comma, 
-						for example, "foo|baz,bar" will match all lines containing (foo OR baz) AND bar.
-    -b, --backlog       Output ALL lines, and continue with tailing. Useful with -g.
-    --init              Create blank .taily.json.dist in $HOME
-    -e, --edit          Launch $EDITOR to edit .taily.json.dist
+	-h, --help                output usage information
+	-V, --version             output the version number
+	-g, --grep [regex]        Grep the results of the output. Accepts multiple arguments sepparated by comma,
+	 						  for example, "foo|baz,bar" will match all lines containing (foo OR baz) AND bar.
+	-b, --backlog             Output ALL lines, and continue with tailing. Useful with -g.
+	-s, --server [host:port]  Run pretty web ui
+	--init                    Create blank .taily.json.dist in $HOME
+	-e, --edit                Launch $EDITOR to edit .taily.json.dist
+
 
 
 #### Configuration 
@@ -44,15 +46,20 @@ In your home, create file called .taily.json. In that file put something like th
 
 
 	{
- 	"files": {
-			"syslog" : {
-        	    "file": "/var/log/syslog",
-            	"color": "red",
-            	"filters": [],
-            	"lineSeparator": "\n"
-        	}
-		}
-	}
+        "files": {
+            "syslog": {
+                "file": "/var/log/syslog",
+                "color": "blue",
+                "filters": [],
+                "lineSeparator": "\n"
+            }
+        },
+        "server": {
+            "host": "127.0.0.1",
+            "port": 9800,
+            "preserve": 100
+        }
+    }
 
 ##### File paths
 
@@ -68,7 +75,14 @@ File paths can be ordinary paths, like `/var/log/syslog` and can also be glob's,
 
 Filters are OR combined conditions to filter the output of a log. For example, you can set this to ["foo","bar"] to only see line containing foo OR bar. 
 
+##### Web ui
+
+Web ui provides simple output of taily via web. Bear in mind, there is no authentication or anything of the kind. If you want to run this as a daemon, it will be best if you put it behind, for example, Nginx proxy and/or firewall. Security folks will, of course, adore this.
 
 ##### P.S.
 
 `filters` and `lineSeparator` is optional.
+
+##### Changelog
+
+1.0.5: Simple web ui.
